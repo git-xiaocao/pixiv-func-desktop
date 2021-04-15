@@ -259,7 +259,7 @@ class PixivRequest {
   }
 
   /// 获取用户所有作品的编号
-  Future<ProfileAll?> getProfileHome(int userId,
+  Future<ProfileAll?> getUserAllWork(int userId,
       {void Function(Object e)? decodeException,
       void Function(Object e)? requestException}) async {
     (_httpClient.httpClientAdapter as DefaultHttpClientAdapter)
