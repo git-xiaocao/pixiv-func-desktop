@@ -32,6 +32,7 @@ const String proxyIP = '127.0.0.1';
 
 const int proxyPort = 54321;
 
+
 class PixivRequest {
   static final _instance = PixivRequest();
 
@@ -39,10 +40,20 @@ class PixivRequest {
     return _instance;
   }
 
-  late final Dio _httpClient;
+  late final Dio httpClient;
+
+  void updateHeaders() {
+    httpClient.options.headers = {
+      'x-user-id': userId,
+      'Cookie': cookie,
+      'Referer': referer,
+      'User-Agent': userAgent,
+      'x-csrf-token': token
+    };
+  }
 
   PixivRequest() {
-    _httpClient = Dio(BaseOptions(
+    httpClient = Dio(BaseOptions(
         connectTimeout: 1000 * 15,
         receiveTimeout: 1000 * 15,
         sendTimeout: 1000 * 15))
@@ -53,22 +64,24 @@ class PixivRequest {
         'User-Agent': userAgent,
         'x-csrf-token': token
       };
+        (httpClient.httpClientAdapter as DefaultHttpClientAdapter)
+          .onHttpClientCreate = (client) {
+        client.findProxy = (uri) {
+          return 'PROXY $proxyIP:$proxyPort';
+        };
+      };
+
   }
 
   Future<Following?> getFollowing(int userId, int offset, int limit,
-      {void Function(Object e)? decodeException,
-      void Function(Object e)? requestException}) async {
-    (_httpClient.httpClientAdapter as DefaultHttpClientAdapter)
-        .onHttpClientCreate = (client) {
-      client.findProxy = (uri) {
-        return 'PROXY $proxyIP:$proxyPort';
-      };
-    };
+      {void Function(Exception e, String response)? decodeException,
+        void Function(DioError e)? requestException}) async {
+
 
     Following? followingData;
 
     try {
-      var response = await _httpClient.get<String>(
+      var response = await httpClient.get<String>(
           'https://www.pixiv.net/ajax/user/$userId/following',
           queryParameters: {
             'offset': offset,
@@ -80,29 +93,25 @@ class PixivRequest {
       if (response.statusCode == 200 && response.data != null) {
         try {
           followingData = Following.fromJson(jsonDecode(response.data!));
-        } catch (e) {
-          decodeException?.call(e);
+        } on Exception catch (e) {
+          decodeException?.call(e,response.data!);
         }
       }
-    } catch (e) {
+    } on DioError catch (e) {
       requestException?.call(e);
     }
+
     return followingData;
   }
 
   /// 获取排行榜
   Future<Ranking?> getRanking(int page, bool r18,
-      {void Function(Object e)? decodeException,
-      void Function(Object e)? requestException}) async {
-    (_httpClient.httpClientAdapter as DefaultHttpClientAdapter)
-        .onHttpClientCreate = (client) {
-      client.findProxy = (uri) {
-        return 'PROXY $proxyIP:$proxyPort';
-      };
-    };
+      {void Function(Exception e, String response)? decodeException,
+        void Function(DioError e)? requestException}) async {
+
     Ranking? rankingData;
     try {
-      var response = await _httpClient
+      var response = await httpClient
           .get<String>('https://www.pixiv.net/ranking.php', queryParameters: {
         'mode': r18 ? 'daily_r18' : 'daily',
         'p': page,
@@ -111,11 +120,11 @@ class PixivRequest {
       if (response.statusCode == 200 && response.data != null) {
         try {
           rankingData = Ranking.fromJson(jsonDecode(response.data!));
-        } catch (e) {
-          decodeException?.call(e);
+        } on Exception catch (e) {
+          decodeException?.call(e,response.data!);
         }
       }
-    } catch (e) {
+    } on DioError catch (e) {
       requestException?.call(e);
     }
 
@@ -124,58 +133,48 @@ class PixivRequest {
 
   /// 查询用户信息
   Future<UserInfo?> queryUserInfo(int userId,
-      {void Function(Object e)? decodeException,
-      void Function(Object e)? requestException}) async {
-    (_httpClient.httpClientAdapter as DefaultHttpClientAdapter)
-        .onHttpClientCreate = (client) {
-      client.findProxy = (uri) {
-        return 'PROXY $proxyIP:$proxyPort';
-      };
-    };
+      {void Function(Exception e, String response)? decodeException,
+        void Function(DioError e)? requestException}) async {
 
     UserInfo? userInfoData;
     try {
-      var response = await _httpClient.get<String>(
+      var response = await httpClient.get<String>(
           'https://www.pixiv.net/touch/ajax/user/details',
           queryParameters: {'id': userId, 'lang': 'zh'});
       if (response.statusCode == 200 && response.data != null) {
         try {
           userInfoData = UserInfo.fromJson(jsonDecode(response.data!));
-        } catch (e) {
-          decodeException?.call(e);
+        } on Exception catch (e) {
+          decodeException?.call(e,response.data!);
         }
       }
-    } catch (e) {
+    } on DioError catch (e) {
       requestException?.call(e);
     }
+
     return userInfoData;
   }
 
   /// 查询插画信息
   Future<IllustInfo?> queryIllustInfo(int illustId,
-      {void Function(Object e)? decodeException,
-      void Function(Object e)? requestException}) async {
-    (_httpClient.httpClientAdapter as DefaultHttpClientAdapter)
-        .onHttpClientCreate = (client) {
-      client.findProxy = (uri) {
-        return 'PROXY $proxyIP:$proxyPort';
-      };
-    };
+      {void Function(Exception e, String response)? decodeException,
+        void Function(DioError e)? requestException}) async {
+
 
     IllustInfo? illustInfoData;
 
     try {
-      var response = await _httpClient.get<String>(
+      var response = await httpClient.get<String>(
           'https://www.pixiv.net/touch/ajax/illust/details',
           queryParameters: {'illust_id': illustId, 'lang': 'zh'});
       if (response.statusCode == 200 && response.data != null) {
         try {
           illustInfoData = IllustInfo.fromJson(jsonDecode(response.data!));
-        } catch (e) {
-          decodeException?.call(e);
+        } on Exception catch (e) {
+          decodeException?.call(e,response.data!);
         }
       }
-    } catch (e) {
+    } on DioError catch (e) {
       requestException?.call(e);
     }
 
@@ -184,19 +183,14 @@ class PixivRequest {
 
   /// 获取插画评论区
   Future<IllustComment?> getIllustComments(int illustId, int offset, int limit,
-      {void Function(Object e)? decodeException,
-      void Function(Object e)? requestException}) async {
-    (_httpClient.httpClientAdapter as DefaultHttpClientAdapter)
-        .onHttpClientCreate = (client) {
-      client.findProxy = (uri) {
-        return 'PROXY $proxyIP:$proxyPort';
-      };
-    };
+      {void Function(Exception e, String response)? decodeException,
+        void Function(DioError e)? requestException}) async {
+
 
     IllustComment? illustCommentData;
 
     try {
-      var response = await _httpClient.get<String>(
+      var response = await httpClient.get<String>(
           'https://www.pixiv.net/ajax/illusts/comments/roots',
           queryParameters: {
             'illust_id': illustId,
@@ -209,11 +203,11 @@ class PixivRequest {
         try {
           illustCommentData =
               IllustComment.fromJson(jsonDecode(response.data!));
-        } catch (e) {
-          decodeException?.call(e);
+        } on Exception catch (e) {
+          decodeException?.call(e, response.data!);
         }
       }
-    } catch (e) {
+    } on DioError catch (e) {
       requestException?.call(e);
     }
 
@@ -222,19 +216,14 @@ class PixivRequest {
 
   /// 获取自己关注的用户的插画
   Future<FollowIllusts?> getFollowIllusts(int page, bool r18,
-      {void Function(Object e)? decodeException,
-      void Function(Object e)? requestException}) async {
-    (_httpClient.httpClientAdapter as DefaultHttpClientAdapter)
-        .onHttpClientCreate = (client) {
-      client.findProxy = (uri) {
-        return 'PROXY $proxyIP:$proxyPort';
-      };
-    };
+      {void Function(Exception e, String response)? decodeException,
+        void Function(DioError e)? requestException}) async {
+
 
     FollowIllusts? followIllustsData;
 
     try {
-      var response = await _httpClient.get<String>(
+      var response = await httpClient.get<String>(
           'https://www.pixiv.net/touch/ajax/follow/latest',
           queryParameters: {
             'type': 'illusts',
@@ -247,11 +236,11 @@ class PixivRequest {
         try {
           followIllustsData =
               FollowIllusts.fromJson(jsonDecode(response.data!));
-        } catch (e) {
-          decodeException?.call(e);
+        } on Exception catch (e) {
+          decodeException?.call(e, response.data!);
         }
       }
-    } catch (e) {
+    } on DioError catch (e) {
       requestException?.call(e);
     }
 
@@ -260,19 +249,14 @@ class PixivRequest {
 
   /// 获取用户所有作品的编号
   Future<ProfileAll?> getUserAllWork(int userId,
-      {void Function(Object e)? decodeException,
-      void Function(Object e)? requestException}) async {
-    (_httpClient.httpClientAdapter as DefaultHttpClientAdapter)
-        .onHttpClientCreate = (client) {
-      client.findProxy = (uri) {
-        return 'PROXY $proxyIP:$proxyPort';
-      };
-    };
+      {void Function(Exception e, String response)? decodeException,
+        void Function(DioError e)? requestException}) async {
+
 
     ProfileAll? profileAllData;
 
     try {
-      var response = await _httpClient.get<String>(
+      var response = await httpClient.get<String>(
           'https://www.pixiv.net/ajax/user/$userId/profile/all',
           queryParameters: {
             'lang': 'zh',
@@ -280,11 +264,11 @@ class PixivRequest {
       if (response.statusCode == 200 && response.data != null) {
         try {
           profileAllData = ProfileAll.fromJson(jsonDecode(response.data!));
-        } catch (e) {
-          decodeException?.call(e);
+        } on Exception catch (e) {
+          decodeException?.call(e, response.data!);
         }
       }
-    } catch (e) {
+    } on DioError catch (e) {
       requestException?.call(e);
     }
 
@@ -293,19 +277,14 @@ class PixivRequest {
 
   /// 查询用户作品
   Future<UserWorks?> queryUserWorksById(List<int> workIdList, bool isFirstPage,
-      {void Function(Object e)? decodeException,
-      void Function(Object e)? requestException}) async {
-    (_httpClient.httpClientAdapter as DefaultHttpClientAdapter)
-        .onHttpClientCreate = (client) {
-      client.findProxy = (uri) {
-        return 'PROXY $proxyIP:$proxyPort';
-      };
-    };
+      {void Function(Exception e, String response)? decodeException,
+        void Function(DioError e)? requestException}) async {
+
 
     UserWorks? userWorksData;
 
     try {
-      var response = await _httpClient.get<String>(
+      var response = await httpClient.get<String>(
           'https://www.pixiv.net/ajax/user/$userId/profile/illusts?',
           queryParameters: {
             'ids[]': workIdList,
@@ -318,11 +297,11 @@ class PixivRequest {
         try {
           var map = jsonDecode(response.data!);
           userWorksData = UserWorks.fromJson(map);
-        } catch (e) {
-          decodeException?.call(e);
+        } on Exception catch (e) {
+          decodeException?.call(e,response.data!);
         }
       }
-    } catch (e) {
+    } on DioError catch (e) {
       requestException?.call(e);
     }
 
@@ -331,19 +310,14 @@ class PixivRequest {
 
   /// 查询用户收藏的图
   Future<UserBookmarks?> queryUserBookmarks(int userId, int offset, int limit,
-      {void Function(Object e)? decodeException,
-      void Function(Object e)? requestException}) async {
-    (_httpClient.httpClientAdapter as DefaultHttpClientAdapter)
-        .onHttpClientCreate = (client) {
-      client.findProxy = (uri) {
-        return 'PROXY $proxyIP:$proxyPort';
-      };
-    };
+      {void Function(Exception e, String response)? decodeException,
+        void Function(DioError e)? requestException}) async {
+
 
     UserBookmarks? userBookmarksData;
 
     try {
-      var response = await _httpClient.get<String>(
+      var response = await httpClient.get<String>(
           'https://www.pixiv.net/ajax/user/$userId/illusts/bookmarks',
           queryParameters: {
             'tag': '',
@@ -356,11 +330,11 @@ class PixivRequest {
         try {
           userBookmarksData =
               UserBookmarks.fromJson(jsonDecode(response.data!));
-        } catch (e) {
-          decodeException?.call(e);
+        } on Exception catch (e) {
+          decodeException?.call(e,response.data!);
         }
       }
-    } catch (e) {
+    } on DioError catch (e) {
       requestException?.call(e);
     }
 
@@ -370,19 +344,14 @@ class PixivRequest {
   /// 获取推荐
   Future<Recommender?> getRecommender(int quantity,
       {bool? r18,
-      void Function(Object e)? decodeException,
-      void Function(Object e)? requestException}) async {
-    (_httpClient.httpClientAdapter as DefaultHttpClientAdapter)
-        .onHttpClientCreate = (client) {
-      client.findProxy = (uri) {
-        return 'PROXY $proxyIP:$proxyPort';
-      };
-    };
+        void Function(Exception e, String response)? decodeException,
+        void Function(DioError e)? requestException}) async {
+
 
     Recommender? recommenderData;
 
     try {
-      var response = await _httpClient.get<String>(
+      var response = await httpClient.get<String>(
           'https://www.pixiv.net/rpc/recommender.php',
           queryParameters: {
             'type': 'illust',
@@ -392,18 +361,18 @@ class PixivRequest {
             'mode': r18 == null
                 ? 'all'
                 : r18
-                    ? 'r18'
-                    : 'safe'
+                ? 'r18'
+                : 'safe'
           });
 
       if (response.statusCode == 200 && response.data != null) {
         try {
           recommenderData = Recommender.fromJson(jsonDecode(response.data!));
-        } catch (e) {
-          decodeException?.call(e);
+        } on Exception catch (e) {
+          decodeException?.call(e,response.data!);
         }
       }
-    } catch (e) {
+    } on DioError catch (e) {
       requestException?.call(e);
     }
     return recommenderData;
@@ -411,19 +380,14 @@ class PixivRequest {
 
   /// 获取书签(List)
   Future<Bookmarks?> getBookmarks(int userId, int page,
-      {void Function(Object e)? decodeException,
-      void Function(Object e)? requestException}) async {
-    (_httpClient.httpClientAdapter as DefaultHttpClientAdapter)
-        .onHttpClientCreate = (client) {
-      client.findProxy = (uri) {
-        return 'PROXY $proxyIP:$proxyPort';
-      };
-    };
+      {void Function(Exception e, String response)? decodeException,
+        void Function(DioError e)? requestException}) async {
+
 
     Bookmarks? bookmarksData;
 
     try {
-      var response = await _httpClient.get<String>(
+      var response = await httpClient.get<String>(
           'https://www.pixiv.net/touch/ajax/user/bookmarks',
           queryParameters: {
             'id': userId,
@@ -435,11 +399,11 @@ class PixivRequest {
       if (response.statusCode == 200 && response.data != null) {
         try {
           bookmarksData = Bookmarks.fromJson(jsonDecode(response.data!));
-        } catch (e) {
-          decodeException?.call(e);
+        } on Exception catch (e) {
+          decodeException?.call(e,response.data!);
         }
       }
-    } catch (e) {
+    } on DioError catch (e) {
       requestException?.call(e);
     }
     return bookmarksData;
@@ -451,14 +415,12 @@ class PixivRequest {
         connectTimeout: 1000 * 10,
         receiveTimeout: 1000 * 10,
         sendTimeout: 1000 * 10))
-      ..options.headers = {'Referer': referer, 'User-Agent': userAgent};
-
-    (httpClient.httpClientAdapter as DefaultHttpClientAdapter)
-        .onHttpClientCreate = (client) {
-      client.findProxy = (uri) {
-        return 'PROXY $proxyIP:$proxyPort';
+      ..options.headers = {
+        'Referer': referer,
+        'User-Agent': userAgent
       };
-    };
+
+
 
     await httpClient.download(url, savePath,
         onReceiveProgress: onReceiveProgress);
@@ -468,20 +430,15 @@ class PixivRequest {
   ///添加书签
   Future<BookmarkAdd?> bookmarkAdd(int illustId,
       {required String comment,
-      required List<String> tags,
-      void Function(Object e)? decodeException,
-      void Function(Object e)? requestException}) async {
-    (_httpClient.httpClientAdapter as DefaultHttpClientAdapter)
-        .onHttpClientCreate = (client) {
-      client.findProxy = (uri) {
-        return 'PROXY $proxyIP:$proxyPort';
-      };
-    };
+        required List<String> tags,
+        void Function(Exception e, String response)? decodeException,
+        void Function(DioError e)? requestException}) async {
+
 
     BookmarkAdd? bookmarkAddData;
 
     try {
-      var response = await _httpClient.post<String>(
+      var response = await httpClient.post<String>(
           'https://www.pixiv.net/ajax/illusts/bookmarks/add',
           data: jsonEncode({
             'illust_id': '$illustId', //pixiv要的string类型
@@ -494,11 +451,11 @@ class PixivRequest {
         try {
           var map = jsonDecode(response.data!);
           bookmarkAddData = BookmarkAdd.fromJson(map);
-        } catch (e) {
-          decodeException?.call(e);
+        } on Exception catch (e) {
+          decodeException?.call(e,response.data!);
         }
       }
-    } catch (e) {
+    } on DioError catch (e) {
       requestException?.call(e);
     }
 
@@ -507,17 +464,12 @@ class PixivRequest {
 
   ///删除书签
   Future<bool> bookmarkDelete(int bookmarkId,
-      {void Function(Object e)? requestException}) async {
+      {void Function(DioError e)? requestException}) async {
     var success = false;
-    (_httpClient.httpClientAdapter as DefaultHttpClientAdapter)
-        .onHttpClientCreate = (client) {
-      client.findProxy = (uri) {
-        return 'PROXY $proxyIP:$proxyPort';
-      };
-    };
+
 
     try {
-      var response = await _httpClient.post<String>(
+      var response = await httpClient.post<String>(
           'https://www.pixiv.net/rpc/index.php',
           data: FormData.fromMap(
               {'mode': 'delete_illust_bookmark', 'bookmark_id': bookmarkId}));
@@ -529,24 +481,19 @@ class PixivRequest {
           success = false;
         }
       }
-    } catch (e) {
+    } on DioError catch (e) {
       requestException?.call(e);
     }
     return success;
   }
 
   Future<bool> followUserAdd(int userId,
-      {void Function(Object e)? requestException}) async {
+      {void Function(DioError e)? requestException}) async {
     var success = false;
-    (_httpClient.httpClientAdapter as DefaultHttpClientAdapter)
-        .onHttpClientCreate = (client) {
-      client.findProxy = (uri) {
-        return 'PROXY $proxyIP:$proxyPort';
-      };
-    };
+
 
     try {
-      var response = await _httpClient.post<String>(
+      var response = await httpClient.post<String>(
           'https://www.pixiv.net/bookmark_add.php',
           data: FormData.fromMap({
             'mode': 'add',
@@ -559,24 +506,19 @@ class PixivRequest {
       if (response.statusCode == 200 && response.data != null) {
         success = response.data! == '[]';
       }
-    } catch (e) {
+    } on DioError catch (e) {
       requestException?.call(e);
     }
     return success;
   }
 
   Future<bool> followUserDelete(int userId,
-      {void Function(Object e)? requestException}) async {
+      {void Function(DioError e)? requestException}) async {
     var success = false;
-    (_httpClient.httpClientAdapter as DefaultHttpClientAdapter)
-        .onHttpClientCreate = (client) {
-      client.findProxy = (uri) {
-        return 'PROXY $proxyIP:$proxyPort';
-      };
-    };
+
 
     try {
-      var response = await _httpClient.post<String>(
+      var response = await httpClient.post<String>(
           'https://www.pixiv.net/rpc_group_setting.php',
           data: FormData.fromMap(
               {'mode': 'del', 'type': 'bookuser', 'id': '$userId'}));
@@ -588,9 +530,10 @@ class PixivRequest {
           success = false;
         }
       }
-    } catch (e) {
+    } on DioError catch (e) {
       requestException?.call(e);
     }
     return success;
   }
 }
+
