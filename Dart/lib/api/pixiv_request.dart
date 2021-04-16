@@ -40,10 +40,10 @@ class PixivRequest {
     return _instance;
   }
 
-  late final Dio httpClient;
+  late final Dio _httpClient;
 
   void updateHeaders() {
-    httpClient.options.headers = {
+    _httpClient.options.headers = {
       'x-user-id': userId,
       'Cookie': cookie,
       'Referer': referer,
@@ -53,7 +53,7 @@ class PixivRequest {
   }
 
   PixivRequest() {
-    httpClient = Dio(BaseOptions(
+    _httpClient = Dio(BaseOptions(
         connectTimeout: 1000 * 15,
         receiveTimeout: 1000 * 15,
         sendTimeout: 1000 * 15))
@@ -64,7 +64,7 @@ class PixivRequest {
         'User-Agent': userAgent,
         'x-csrf-token': token
       };
-        (httpClient.httpClientAdapter as DefaultHttpClientAdapter)
+        (_httpClient.httpClientAdapter as DefaultHttpClientAdapter)
           .onHttpClientCreate = (client) {
         client.findProxy = (uri) {
           return 'PROXY $proxyIP:$proxyPort';
@@ -81,7 +81,7 @@ class PixivRequest {
     Following? followingData;
 
     try {
-      var response = await httpClient.get<String>(
+      var response = await _httpClient.get<String>(
           'https://www.pixiv.net/ajax/user/$userId/following',
           queryParameters: {
             'offset': offset,
@@ -111,7 +111,7 @@ class PixivRequest {
 
     Ranking? rankingData;
     try {
-      var response = await httpClient
+      var response = await _httpClient
           .get<String>('https://www.pixiv.net/ranking.php', queryParameters: {
         'mode': r18 ? 'daily_r18' : 'daily',
         'p': page,
@@ -138,7 +138,7 @@ class PixivRequest {
 
     UserInfo? userInfoData;
     try {
-      var response = await httpClient.get<String>(
+      var response = await _httpClient.get<String>(
           'https://www.pixiv.net/touch/ajax/user/details',
           queryParameters: {'id': userId, 'lang': 'zh'});
       if (response.statusCode == 200 && response.data != null) {
@@ -164,7 +164,7 @@ class PixivRequest {
     IllustInfo? illustInfoData;
 
     try {
-      var response = await httpClient.get<String>(
+      var response = await _httpClient.get<String>(
           'https://www.pixiv.net/touch/ajax/illust/details',
           queryParameters: {'illust_id': illustId, 'lang': 'zh'});
       if (response.statusCode == 200 && response.data != null) {
@@ -190,7 +190,7 @@ class PixivRequest {
     IllustComment? illustCommentData;
 
     try {
-      var response = await httpClient.get<String>(
+      var response = await _httpClient.get<String>(
           'https://www.pixiv.net/ajax/illusts/comments/roots',
           queryParameters: {
             'illust_id': illustId,
@@ -223,7 +223,7 @@ class PixivRequest {
     FollowIllusts? followIllustsData;
 
     try {
-      var response = await httpClient.get<String>(
+      var response = await _httpClient.get<String>(
           'https://www.pixiv.net/touch/ajax/follow/latest',
           queryParameters: {
             'type': 'illusts',
@@ -256,7 +256,7 @@ class PixivRequest {
     ProfileAll? profileAllData;
 
     try {
-      var response = await httpClient.get<String>(
+      var response = await _httpClient.get<String>(
           'https://www.pixiv.net/ajax/user/$userId/profile/all',
           queryParameters: {
             'lang': 'zh',
@@ -284,7 +284,7 @@ class PixivRequest {
     UserWorks? userWorksData;
 
     try {
-      var response = await httpClient.get<String>(
+      var response = await _httpClient.get<String>(
           'https://www.pixiv.net/ajax/user/$userId/profile/illusts?',
           queryParameters: {
             'ids[]': workIdList,
@@ -317,7 +317,7 @@ class PixivRequest {
     UserBookmarks? userBookmarksData;
 
     try {
-      var response = await httpClient.get<String>(
+      var response = await _httpClient.get<String>(
           'https://www.pixiv.net/ajax/user/$userId/illusts/bookmarks',
           queryParameters: {
             'tag': '',
@@ -351,7 +351,7 @@ class PixivRequest {
     Recommender? recommenderData;
 
     try {
-      var response = await httpClient.get<String>(
+      var response = await _httpClient.get<String>(
           'https://www.pixiv.net/rpc/recommender.php',
           queryParameters: {
             'type': 'illust',
@@ -387,7 +387,7 @@ class PixivRequest {
     Bookmarks? bookmarksData;
 
     try {
-      var response = await httpClient.get<String>(
+      var response = await _httpClient.get<String>(
           'https://www.pixiv.net/touch/ajax/user/bookmarks',
           queryParameters: {
             'id': userId,
@@ -438,7 +438,7 @@ class PixivRequest {
     BookmarkAdd? bookmarkAddData;
 
     try {
-      var response = await httpClient.post<String>(
+      var response = await _httpClient.post<String>(
           'https://www.pixiv.net/ajax/illusts/bookmarks/add',
           data: jsonEncode({
             'illust_id': '$illustId', //pixiv要的string类型
@@ -469,7 +469,7 @@ class PixivRequest {
 
 
     try {
-      var response = await httpClient.post<String>(
+      var response = await _httpClient.post<String>(
           'https://www.pixiv.net/rpc/index.php',
           data: FormData.fromMap(
               {'mode': 'delete_illust_bookmark', 'bookmark_id': bookmarkId}));
@@ -493,7 +493,7 @@ class PixivRequest {
 
 
     try {
-      var response = await httpClient.post<String>(
+      var response = await _httpClient.post<String>(
           'https://www.pixiv.net/bookmark_add.php',
           data: FormData.fromMap({
             'mode': 'add',
@@ -518,7 +518,7 @@ class PixivRequest {
 
 
     try {
-      var response = await httpClient.post<String>(
+      var response = await _httpClient.post<String>(
           'https://www.pixiv.net/rpc_group_setting.php',
           data: FormData.fromMap(
               {'mode': 'del', 'type': 'bookuser', 'id': '$userId'}));
