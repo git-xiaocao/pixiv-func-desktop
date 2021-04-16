@@ -12,14 +12,14 @@
 import 'api/pixiv_request.dart';
 
 void main() {
-  ///第1页  r18模式
-  PixivRequest.instance.getRanking(1, true, decodeException: (e) {
-    print('反序列化异常');
+  PixivRequest.instance.getRanking(1, true, decodeException: (e, response) {
+    print('异常:$e\n响应:$response');
   }, requestException: (e) {
-    print('请求异常');
-  }).then((rankingData) {
-    print(rankingData);
+    print('异常:$e\n响应:${e.response}');
+  }).then((ranking) {
+    print(ranking);
   });
 }
+
 ```
 
