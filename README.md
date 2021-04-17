@@ -4,7 +4,16 @@
 
 ![示例](https://user-images.githubusercontent.com/76673990/115114748-7973bf80-9fc3-11eb-80cf-5823666ce20f.png)
 
-![获取Token和Cookie](https://user-images.githubusercontent.com/76673990/115114547-8c39c480-9fc2-11eb-9222-c23747774144.png)
+![获取Cookie和Token](https://user-images.githubusercontent.com/76673990/115114547-8c39c480-9fc2-11eb-9222-c23747774144.png)
+
+### 在Firefox和Chrome获取Cookie和Token
+
+
+https://user-images.githubusercontent.com/76673990/115116029-20f3f080-9fca-11eb-827d-9a0792975b4a.mp4
+
+
+
+
 
 ### 目前提供适用于Dart的请求 后续将提供Kotlin和C#版本
 
