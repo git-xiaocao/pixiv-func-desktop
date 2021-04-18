@@ -16,7 +16,7 @@ class Works{
   @JsonKey(name: 'tags')
   late List<String> tags;
   @JsonKey(name: 'userId')
-  late String userId;
+  late int userId;
   @JsonKey(name: 'userName')
   late String userName;
   @JsonKey(name: 'width')

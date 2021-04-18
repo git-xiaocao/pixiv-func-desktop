@@ -5,7 +5,7 @@ part 'illust.g.dart';
 @JsonSerializable(explicitToJson: true)
 class Illust{
   @JsonKey(name: 'id')
-  late String id;
+  late int id;
   @JsonKey(name: 'title')
   late String title;
   @JsonKey(name: 'illustType')
@@ -17,7 +17,7 @@ class Illust{
   @JsonKey(name: 'tags')
   late List<String> tags;
   @JsonKey(name: 'userId')
-  late String userId;
+  late int userId;
   @JsonKey(name: 'userName')
   late String userName;
   @JsonKey(name: 'width')

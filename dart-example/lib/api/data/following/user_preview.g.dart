@@ -8,7 +8,7 @@ part of 'user_preview.dart';
 
 UserPreview _$UserPreviewFromJson(Map<String, dynamic> json) {
   return UserPreview(
-    json['userId'] as String,
+    int.parse(json['userId'] as String),
     json['userName'] as String,
     json['profileImageUrl'] as String,
     json['userComment'] as String,

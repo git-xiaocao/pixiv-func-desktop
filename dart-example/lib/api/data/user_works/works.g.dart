@@ -13,7 +13,7 @@ Works _$WorksFromJson(Map<String, dynamic> json) {
     json['url'] as String,
     json['description'] as String,
     (json['tags'] as List<dynamic>).map((e) => e as String).toList(),
-    json['userId'] as String,
+    int.parse(json['userId'] as String),
     json['userName'] as String,
     json['width'] as int,
     json['height'] as int,

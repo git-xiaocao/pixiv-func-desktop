@@ -1,5 +1,5 @@
 import 'package:json_annotation/json_annotation.dart';
-import 'body.dart';
+import 'user_info_body.dart';
 
 part 'user_info.g.dart';
 

@@ -5,7 +5,7 @@ part 'author_details.g.dart';
 @JsonSerializable(explicitToJson: true)
 class AuthorDetails {
   @JsonKey(name: 'user_id')
-  late String userId;
+  late int userId;
   @JsonKey(name: 'user_status')
   late String userStatus;
   @JsonKey(name: 'user_account')

@@ -33,15 +33,15 @@ class Illust {
   @JsonKey(name: 'upload_timestamp')
   late int uploadTimestamp;
   @JsonKey(name: 'id')
-  late String id;
+  late int id;
   @JsonKey(name: 'user_id')
-  late String userId;
+  late int userId;
   @JsonKey(name: 'title')
   late String title;
   @JsonKey(name: 'width')
-  late String width;
+  late int width;
   @JsonKey(name: 'height')
-  late String height;
+  late int height;
   @JsonKey(name: 'page_count')
   late String pageCount;
   @JsonKey(name: 'comment')

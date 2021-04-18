@@ -8,13 +8,13 @@ part of 'illust.dart';
 
 Illust _$IllustFromJson(Map<String, dynamic> json) {
   return Illust(
-    json['id'] as String,
+    int.parse(json['id'] as String),
     json['title'] as String,
     json['illustType'] as int,
     json['url'] as String,
     json['description'] as String,
     (json['tags'] as List<dynamic>).map((e) => e as String).toList(),
-    json['userId'] as String,
+    int.parse(json['userId'] as String),
     json['userName'] as String,
     json['width'] as int,
     json['height'] as int,

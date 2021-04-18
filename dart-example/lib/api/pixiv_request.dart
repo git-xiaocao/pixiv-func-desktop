@@ -2,8 +2,8 @@ import 'dart:convert';
 
 import 'package:dio/adapter.dart';
 import 'package:dio/dio.dart';
+import 'package:example/config.dart';
 
-import '../config.dart';
 import 'data/bookmark_add/bookmark_add.dart';
 import 'data/bookmarks/bookmarks.dart';
 import 'data/follow_illusts/follow_illusts.dart';

@@ -6,7 +6,7 @@ part 'user_preview.g.dart';
 @JsonSerializable(explicitToJson: true)
 class UserPreview{
   @JsonKey(name: 'userId')
-  late String userId;
+  late int userId;
   @JsonKey(name: 'userName')
   late String userName;
   @JsonKey(name: 'profileImageUrl')

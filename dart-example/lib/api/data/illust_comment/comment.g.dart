@@ -8,10 +8,10 @@ part of 'comment.dart';
 
 Comment _$CommentFromJson(Map<String, dynamic> json) {
   return Comment(
-    json['userId'] as String,
+    int.parse(json['userId'] as String),
     json['userName'] as String,
     json['img'] as String,
-    json['id'] as String,
+    int.parse(json['id'] as String),
     json['comment'] as String,
     json['commentDate'] as String,
     json['commentUserId'] as String,

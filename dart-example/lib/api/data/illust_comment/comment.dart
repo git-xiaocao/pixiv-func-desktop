@@ -5,14 +5,14 @@ part 'comment.g.dart';
 @JsonSerializable(explicitToJson: true)
 class Comment{
   @JsonKey(name: 'userId')
-  late String userId;
+  late int userId;
   @JsonKey(name: 'userName')
   late String userName;
   ///头像
   @JsonKey(name: 'img')
   late String img;
   @JsonKey(name: 'id')
-  late String id;
+  late int id;
   @JsonKey(name: 'comment')
   late String comment;
   @JsonKey(name: 'commentDate')

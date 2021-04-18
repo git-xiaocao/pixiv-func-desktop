@@ -8,7 +8,7 @@ part of 'author_details.dart';
 
 AuthorDetails _$AuthorDetailsFromJson(Map<String, dynamic> json) {
   return AuthorDetails(
-    json['user_id'] as String,
+    int.parse(json['user_id'] as String),
     json['user_status'] as String,
     json['user_account'] as String,
     json['user_name'] as String,

@@ -8,12 +8,12 @@ part of 'works.dart';
 
 Works _$WorksFromJson(Map<String, dynamic> json) {
   return Works(
-    json['id'].toString(),
+    int.parse(json['id'] as String),
     json['title'] as String,
     json['url'] as String,
     json['description'] as String,
     (json['tags'] as List<dynamic>).map((e) => e as String).toList(),
-    json['userId'].toString(),
+    int.parse(json['userId'] as String),
     json['userName'] as String,
     json['width'] as int,
     json['height'] as int,

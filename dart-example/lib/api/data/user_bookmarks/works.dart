@@ -5,7 +5,7 @@ part 'works.g.dart';
 @JsonSerializable(explicitToJson: true)
 class Works{
   @JsonKey(name: 'id')
-  late String id;
+  late int id;
   @JsonKey(name: 'title')
   late String title;
   @JsonKey(name: 'url')
@@ -15,7 +15,7 @@ class Works{
   @JsonKey(name: 'tags')
   late List<String> tags;
   @JsonKey(name: 'userId')
-  late String userId;
+  late int userId;
   @JsonKey(name: 'userName')
   late String userName;
   @JsonKey(name: 'width')

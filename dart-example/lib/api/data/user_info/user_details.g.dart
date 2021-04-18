@@ -8,8 +8,8 @@ part of 'user_details.dart';
 
 UserDetails _$UserDetailsFromJson(Map<String, dynamic> json) {
   return UserDetails(
-    json['user_id'] as String,
-    json['user_status'] as String,
+    int.parse(json['user_id'] as String),
+    int.parse(json['user_status'] as String),
     json['user_account'] as String,
     json['user_name'] as String,
     json['user_premium'] as String,
