@@ -10,7 +10,7 @@ IllustInfo _$IllustInfoFromJson(Map<String, dynamic> json) {
   return IllustInfo(
     json['error'] as bool,
     json['message'] as String,
-    json['body'] == null
+    json['body'] is! Map
         ? null
         : IllustInfoBody.fromJson(json['body'] as Map<String, dynamic>),
   );

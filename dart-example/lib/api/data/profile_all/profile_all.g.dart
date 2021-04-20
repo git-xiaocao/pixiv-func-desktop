@@ -18,5 +18,5 @@ Map<String, dynamic> _$ProfileAllToJson(ProfileAll instance) =>
     <String, dynamic>{
       'error': instance.error,
       'message': instance.message,
-      'body': instance.body.toJson(),
+      'body': instance.body?.toJson(),
     };

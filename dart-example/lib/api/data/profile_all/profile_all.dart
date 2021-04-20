@@ -10,7 +10,7 @@ class ProfileAll{
   @JsonKey(name:'message')
   late String message;
   @JsonKey(name:'body')
-  late ProfileAllBody body;
+  late ProfileAllBody? body;
 
 
   ProfileAll(this.error, this.message, this.body);

@@ -12,7 +12,7 @@ class Bookmarks{
   String message;
 
   @JsonKey(name: 'body')
-  BookmarksBody body;
+  BookmarksBody? body;
 
   Bookmarks(this.error, this.message, this.body);
 

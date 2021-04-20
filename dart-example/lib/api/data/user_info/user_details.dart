@@ -16,25 +16,33 @@ class UserDetails{
   @JsonKey(name: 'user_premium')
   late String userPremium;
   @JsonKey(name: 'user_webpage')
-  late String userWebpage;//博客
+  ///网站
+  late String userWebpage;
+  ///国家
   @JsonKey(name: 'user_country')
-  late String? userCountry;//国家
+  late String? userCountry;
+  ///出生日期
   @JsonKey(name: 'user_birth')
-  late String? userBirth;//出生日期
+  late String? userBirth;
   @JsonKey(name: 'user_comment')
   late String userComment;
   @JsonKey(name: 'profile_img')
   late ProfileImg profileImg;
+  ///地区
   @JsonKey(name: 'location')
-  late String? location;//地区
+  late String? location;
+  ///工作
   @JsonKey(name: 'user_job_txt')
-  late String? userJobTxt;//工作
+  late String? userJobTxt;
+  ///性别
   @JsonKey(name: 'user_sex_txt')
-  late String? userSexTxt;//性别
+  late String? userSexTxt;
+  ///年龄
   @JsonKey(name: 'user_age')
-  late int? userAge;//年龄
+  late int? userAge;
+  ///生日
   @JsonKey(name: 'user_birth_txt')
-  late String? userBirthTxt;//生日
+  late String? userBirthTxt;
   @JsonKey(name: 'is_followed')
   late bool isFollowed;
   @JsonKey(name: 'is_following')
@@ -49,8 +57,10 @@ class UserDetails{
   late bool acceptRequest;
   @JsonKey(name: 'is_official')
   late bool isOfficial;
+  ///关注的数量
   @JsonKey(name: 'follows')
-  late int follows;//关注的数量
+  late int follows;
+  ///社交账号
   @JsonKey(name: 'social')
   late Map<String, Map<String, String>>? social;
   @JsonKey(name: 'user_comment_html')

@@ -10,7 +10,7 @@ BookmarkAdd _$BookmarkAddFromJson(Map<String, dynamic> json) {
   return BookmarkAdd(
     json['error'] as bool,
     json['message'] as String,
-    json['body'] == null
+    json['body'] is! Map
         ? null
         : BookmarkAddBody.fromJson(json['body'] as Map<String, dynamic>),
   );

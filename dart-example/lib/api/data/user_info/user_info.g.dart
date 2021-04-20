@@ -10,7 +10,7 @@ UserInfo _$UserInfoFromJson(Map<String, dynamic> json) {
   return UserInfo(
     json['error'] as bool,
     json['message'] as String,
-    json['body'] == null
+    json['body'] is! Map
         ? null
         : Body.fromJson(json['body'] as Map<String, dynamic>),
   );
