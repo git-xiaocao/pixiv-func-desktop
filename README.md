@@ -2,7 +2,7 @@
 
 ## 看色图用的  
 
-前往[Release](https://github.com/xiao-cao-x/pixiv-desktop-xiaocao/edit/main/README.md)页面下载
+前往 [Release](https://github.com/xiao-cao-x/pixiv-desktop-xiaocao/releases) 页面下载
 
 <details>
   <summary>需要先填充Cookie和Token</summary><br/>
