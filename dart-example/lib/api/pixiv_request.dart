@@ -1,6 +1,5 @@
 import 'dart:convert';
 
-import 'package:dio/adapter.dart';
 import 'package:dio/dio.dart';
 import 'package:example/config.dart';
 
@@ -10,9 +9,12 @@ import 'data/follow_illusts/follow_illusts.dart';
 import 'data/following/following.dart';
 import 'data/illust_comment/illust_comment.dart';
 import 'data/illust_info/illust_info.dart';
+import 'data/illust_related/illust_related.dart';
 import 'data/profile_all/profile_all.dart';
 import 'data/ranking/ranking.dart';
 import 'data/recommender/recommender.dart';
+import 'data/search/search.dart';
+import 'data/search_suggestion/search_suggestion.dart';
 import 'data/user_bookmarks/user_bookmarks.dart';
 import 'data/user_info/user_info.dart';
 import 'data/user_works/user_works.dart';
@@ -56,13 +58,6 @@ class PixivRequest {
   Future<Following?> getFollowing(int userId, int offset, int limit,
       {void Function(Exception e, String response)? decodeException,
         void Function(DioError e)? requestException}) async {
-    (_httpClient.httpClientAdapter as DefaultHttpClientAdapter)
-        .onHttpClientCreate = (client) {
-      client.findProxy = (uri) {
-        return 'PROXY ${Config.proxyIP}:${Config.proxyPort}';
-      };
-    };
-
     Following? followingData;
 
     try {
@@ -90,23 +85,22 @@ class PixivRequest {
   }
 
   /// 获取排行榜
-  Future<Ranking?> getRanking(int page, bool r18,
-      {void Function(Exception e, String response)? decodeException,
-        void Function(DioError e)? requestException}) async {
-    (_httpClient.httpClientAdapter as DefaultHttpClientAdapter)
-        .onHttpClientCreate = (client) {
-      client.findProxy = (uri) {
-        return 'PROXY ${Config.proxyIP}:${Config.proxyPort}';
-      };
-    };
+  Future<Ranking?> getRanking(int page, {
+    required String mode,
+    required String type,
+    void Function(Exception e, String response)? decodeException,
+    void Function(DioError e)? requestException,
+  }) async {
     Ranking? rankingData;
     try {
-      var response = await _httpClient
-          .get<String>('https://www.pixiv.net/ranking.php', queryParameters: {
-        'mode': r18 ? 'daily_r18' : 'daily',
-        'p': page,
-        'format': 'json'
-      });
+      var response = await _httpClient.get<String>(
+          'https://www.pixiv.net/touch/ajax/ranking/illust?',
+          queryParameters: {
+            'mode': mode,
+            'page': page,
+            'type': type,
+            'lang': 'zh'
+          });
       if (response.data != null) {
         try {
           rankingData = Ranking.fromJson(jsonDecode(response.data!));
@@ -125,13 +119,6 @@ class PixivRequest {
   Future<UserInfo?> queryUserInfo(int userId,
       {void Function(Exception e, String response)? decodeException,
         void Function(DioError e)? requestException}) async {
-    (_httpClient.httpClientAdapter as DefaultHttpClientAdapter)
-        .onHttpClientCreate = (client) {
-      client.findProxy = (uri) {
-        return 'PROXY ${Config.proxyIP}:${Config.proxyPort}';
-      };
-    };
-
     UserInfo? userInfoData;
     try {
       var response = await _httpClient.get<String>(
@@ -155,13 +142,6 @@ class PixivRequest {
   Future<IllustInfo?> queryIllustInfo(int illustId,
       {void Function(Exception e, String response)? decodeException,
         void Function(DioError e)? requestException}) async {
-    (_httpClient.httpClientAdapter as DefaultHttpClientAdapter)
-        .onHttpClientCreate = (client) {
-      client.findProxy = (uri) {
-        return 'PROXY ${Config.proxyIP}:${Config.proxyPort}';
-      };
-    };
-
     IllustInfo? illustInfoData;
 
     try {
@@ -186,13 +166,6 @@ class PixivRequest {
   Future<IllustComment?> getIllustComments(int illustId, int offset, int limit,
       {void Function(Exception e, String response)? decodeException,
         void Function(DioError e)? requestException}) async {
-    (_httpClient.httpClientAdapter as DefaultHttpClientAdapter)
-        .onHttpClientCreate = (client) {
-      client.findProxy = (uri) {
-        return 'PROXY ${Config.proxyIP}:${Config.proxyPort}';
-      };
-    };
-
     IllustComment? illustCommentData;
 
     try {
@@ -220,17 +193,47 @@ class PixivRequest {
     return illustCommentData;
   }
 
-  /// 获取自己关注的用户的插画
-  Future<FollowIllusts?> getFollowIllusts(int page, bool r18,
-      {void Function(Exception e, String response)? decodeException,
-        void Function(DioError e)? requestException}) async {
-    (_httpClient.httpClientAdapter as DefaultHttpClientAdapter)
-        .onHttpClientCreate = (client) {
-      client.findProxy = (uri) {
-        return 'PROXY ${Config.proxyIP}:${Config.proxyPort}';
-      };
-    };
+  ///获取插画的相关推荐(同类型)
+  Future<IllustRelated?> getIllustRelated(int illustId,
+      int page, {
+        String mode = 'all',
+        void Function(Exception e, String response)? decodeException,
+        void Function(DioError e)? requestException,
+      }) async {
+    IllustRelated? illustRelatedData;
 
+    try {
+      var response = await _httpClient.get<String>(
+          'https://www.pixiv.net/touch/ajax/follow/latest',
+          queryParameters: {
+            'type': 'illusts',
+            'p': page,
+            'include_meta': 0,
+            'mode': mode,
+            'lang': 'zh',
+          });
+
+      if (response.data != null) {
+        try {
+          illustRelatedData =
+              IllustRelated.fromJson(jsonDecode(response.data!));
+        } on Exception catch (e) {
+          decodeException?.call(e, response.data!);
+        }
+      }
+    } on DioError catch (e) {
+      requestException?.call(e);
+    }
+
+    return illustRelatedData;
+  }
+
+  /// 获取自己关注的用户的插画
+  Future<FollowIllusts?> getFollowIllusts(int page, {
+    bool? r18,
+    void Function(Exception e, String response)? decodeException,
+    void Function(DioError e)? requestException,
+  }) async {
     FollowIllusts? followIllustsData;
 
     try {
@@ -241,9 +244,13 @@ class PixivRequest {
             'p': page,
             'include_meta': 0,
             'lang': 'zh',
-            'mode': r18 ? 'r18' : ''
+            'mode': r18 == null
+                ? 'all'
+                : r18
+                ? 'r18'
+                : 'safe'
           });
-      if ( response.data != null) {
+      if (response.data != null) {
         try {
           followIllustsData =
               FollowIllusts.fromJson(jsonDecode(response.data!));
@@ -262,13 +269,6 @@ class PixivRequest {
   Future<ProfileAll?> getUserAllWork(int userId,
       {void Function(Exception e, String response)? decodeException,
         void Function(DioError e)? requestException}) async {
-    (_httpClient.httpClientAdapter as DefaultHttpClientAdapter)
-        .onHttpClientCreate = (client) {
-      client.findProxy = (uri) {
-        return 'PROXY ${Config.proxyIP}:${Config.proxyPort}';
-      };
-    };
-
     ProfileAll? profileAllData;
 
     try {
@@ -295,13 +295,6 @@ class PixivRequest {
   Future<UserWorks?> queryUserWorksById(List<int> workIdList, bool isFirstPage,
       {void Function(Exception e, String response)? decodeException,
         void Function(DioError e)? requestException}) async {
-    (_httpClient.httpClientAdapter as DefaultHttpClientAdapter)
-        .onHttpClientCreate = (client) {
-      client.findProxy = (uri) {
-        return 'PROXY ${Config.proxyIP}:${Config.proxyPort}';
-      };
-    };
-
     UserWorks? userWorksData;
 
     try {
@@ -333,13 +326,6 @@ class PixivRequest {
   Future<UserBookmarks?> queryUserBookmarks(int userId, int offset, int limit,
       {void Function(Exception e, String response)? decodeException,
         void Function(DioError e)? requestException}) async {
-    (_httpClient.httpClientAdapter as DefaultHttpClientAdapter)
-        .onHttpClientCreate = (client) {
-      client.findProxy = (uri) {
-        return 'PROXY ${Config.proxyIP}:${Config.proxyPort}';
-      };
-    };
-
     UserBookmarks? userBookmarksData;
 
     try {
@@ -372,13 +358,6 @@ class PixivRequest {
       {bool? r18,
         void Function(Exception e, String response)? decodeException,
         void Function(DioError e)? requestException}) async {
-    (_httpClient.httpClientAdapter as DefaultHttpClientAdapter)
-        .onHttpClientCreate = (client) {
-      client.findProxy = (uri) {
-        return 'PROXY ${Config.proxyIP}:${Config.proxyPort}';
-      };
-    };
-
     Recommender? recommenderData;
 
     try {
@@ -413,13 +392,6 @@ class PixivRequest {
   Future<Bookmarks?> getBookmarks(int userId, int page,
       {void Function(Exception e, String response)? decodeException,
         void Function(DioError e)? requestException}) async {
-    (_httpClient.httpClientAdapter as DefaultHttpClientAdapter)
-        .onHttpClientCreate = (client) {
-      client.findProxy = (uri) {
-        return 'PROXY ${Config.proxyIP}:${Config.proxyPort}';
-      };
-    };
-
     Bookmarks? bookmarksData;
 
     try {
@@ -456,13 +428,6 @@ class PixivRequest {
         'User-Agent': Config.userAgent
       };
 
-    (httpClient.httpClientAdapter as DefaultHttpClientAdapter)
-        .onHttpClientCreate = (client) {
-      client.findProxy = (uri) {
-        return 'PROXY ${Config.proxyIP}:${Config.proxyPort}';
-      };
-    };
-
     await httpClient.download(url, savePath,
         onReceiveProgress: onReceiveProgress);
     httpClient.close();
@@ -474,13 +439,6 @@ class PixivRequest {
         required List<String> tags,
         void Function(Exception e, String response)? decodeException,
         void Function(DioError e)? requestException}) async {
-    (_httpClient.httpClientAdapter as DefaultHttpClientAdapter)
-        .onHttpClientCreate = (client) {
-      client.findProxy = (uri) {
-        return 'PROXY ${Config.proxyIP}:${Config.proxyPort}';
-      };
-    };
-
     BookmarkAdd? bookmarkAddData;
 
     try {
@@ -512,12 +470,6 @@ class PixivRequest {
   Future<bool> bookmarkDelete(int bookmarkId,
       {void Function(DioError e)? requestException}) async {
     bool success = false;
-    (_httpClient.httpClientAdapter as DefaultHttpClientAdapter)
-        .onHttpClientCreate = (client) {
-      client.findProxy = (uri) {
-        return 'PROXY ${Config.proxyIP}:${Config.proxyPort}';
-      };
-    };
 
     try {
       var response = await _httpClient.post<String>(
@@ -541,12 +493,6 @@ class PixivRequest {
   Future<bool> followUserAdd(int userId,
       {void Function(DioError e)? requestException}) async {
     bool success = false;
-    (_httpClient.httpClientAdapter as DefaultHttpClientAdapter)
-        .onHttpClientCreate = (client) {
-      client.findProxy = (uri) {
-        return 'PROXY ${Config.proxyIP}:${Config.proxyPort}';
-      };
-    };
 
     try {
       var response = await _httpClient.post<String>(
@@ -571,12 +517,6 @@ class PixivRequest {
   Future<bool> followUserDelete(int userId,
       {void Function(DioError e)? requestException}) async {
     bool success = false;
-    (_httpClient.httpClientAdapter as DefaultHttpClientAdapter)
-        .onHttpClientCreate = (client) {
-      client.findProxy = (uri) {
-        return 'PROXY ${Config.proxyIP}:${Config.proxyPort}';
-      };
-    };
 
     try {
       var response = await _httpClient.post<String>(
@@ -595,5 +535,73 @@ class PixivRequest {
       requestException?.call(e);
     }
     return success;
+  }
+
+  Future<SearchSuggestion?> getSearchSuggestion({
+    String mode = 'all',
+    void Function(DioError e)? requestException,
+    void Function(Exception e)? decodeException,
+  }) async {
+    SearchSuggestion? searchSuggestionData;
+
+    try {
+      var response = await _httpClient.get<String>(
+          'https://www.pixiv.net/ajax/search/suggestion',
+          queryParameters: {'mode': mode, 'lang': 'zh'});
+
+      if (response.data != null) {
+        try {
+          searchSuggestionData =
+              SearchSuggestion.fromJson(jsonDecode(response.data!));
+        } on Exception catch (e) {
+          decodeException?.call(e);
+        }
+      }
+    } on DioError catch (e) {
+      requestException?.call(e);
+    }
+
+    return searchSuggestionData;
+  }
+
+  Future<Search?> search(String keyword, {
+    required int page,
+    required String mode,
+    required String type,
+    required String searchMode,
+    String startDate = '',
+    String endDate = '',
+    void Function(DioError e)? requestException,
+    void Function(Exception e)? decodeException,
+  }) async {
+    Search? searchData;
+
+    try {
+      var response = await _httpClient.get<String>(
+          'https://www.pixiv.net/touch/ajax/search/illusts',
+          queryParameters: {
+            'include_meta': '0',
+            'mode': mode,
+            'scd': startDate,
+            'ecd': endDate,
+            'type': type,
+            's_mode': searchMode,
+            'p': page,
+            'word': keyword,
+            'lang': 'zh'
+          });
+
+      if (response.data != null) {
+        try {
+          searchData = Search.fromJson(jsonDecode(response.data!));
+        } on Exception catch (e) {
+          decodeException?.call(e);
+        }
+      }
+    } on DioError catch (e) {
+      requestException?.call(e);
+    }
+
+    return searchData;
   }
 }

@@ -9,7 +9,7 @@ part of 'user_works_body.dart';
 UserWorksBody _$UserWorksBodyFromJson(Map<String, dynamic> json) {
   return UserWorksBody(
     (json['works'] as Map<String, dynamic>).map(
-      (k, e) => MapEntry(k, Works.fromJson(e as Map<String, dynamic>)),
+      (k, e) => MapEntry(int.parse(k), Work.fromJson(e as Map<String, dynamic>)),
     ),
   );
 }

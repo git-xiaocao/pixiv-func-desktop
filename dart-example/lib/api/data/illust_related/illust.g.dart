@@ -10,7 +10,6 @@ Illust _$IllustFromJson(Map<String, dynamic> json) {
   return Illust(
     json['url'] as String?,
     (json['tags'] as List<dynamic>).map((e) => e as String).toList(),
-      json['bookmark_id']!=null?int.parse(json['bookmark_id'] as String):null,
     json['alt'] as String,
     json['url_s'] as String,
     json['url_sm'] as String,
@@ -19,14 +18,13 @@ Illust _$IllustFromJson(Map<String, dynamic> json) {
     json['url_big'] as String?,
     json['url_placeholder'] as String?,
     json['upload_timestamp'] as int,
-    int.parse(json['id'] as String),
-    int.parse(json['user_id'] as String),
+    json['id'] as int,
+    json['user_id'] as int,
     json['title'] as String,
-    int.parse(json['width'] as String),
-    int.parse(json['height'] as String),
-    json['page_count'] as String,
+    json['width'] as int,
+    json['height'] as int,
+    json['page_count'] as int,
     json['comment'] as String,
-    AuthorDetails.fromJson(json['author_details'] as Map<String, dynamic>)
   );
 }
 

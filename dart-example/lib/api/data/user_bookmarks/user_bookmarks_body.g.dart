@@ -9,7 +9,7 @@ part of 'user_bookmarks_body.dart';
 UserBookmarksBody _$UserBookmarksBodyFromJson(Map<String, dynamic> json) {
   return UserBookmarksBody(
     (json['works'] as List<dynamic>)
-        .map((e) => Works.fromJson(e as Map<String, dynamic>))
+        .map((e) => Work.fromJson(e as Map<String, dynamic>))
         .toList(),
     json['total'] as int,
   );

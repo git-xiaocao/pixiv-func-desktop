@@ -10,7 +10,7 @@ FollowIllusts _$FollowIllustsFromJson(Map<String, dynamic> json) {
   return FollowIllusts(
     json['error'] as bool,
     json['message'] as String,
-    json['body'] == null
+    json['body'] is! Map
         ? null
         : FollowIllustsBody.fromJson(json['body'] as Map<String, dynamic>),
   );

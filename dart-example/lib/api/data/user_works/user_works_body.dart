@@ -1,12 +1,12 @@
 import 'package:json_annotation/json_annotation.dart';
-import 'works.dart';
+import 'work.dart';
 
 part 'user_works_body.g.dart';
 
 @JsonSerializable(explicitToJson: true)
 class UserWorksBody {
   @JsonKey(name: 'works')
-  late Map<String,Works> works;
+  late Map<int,Work> works;
 
   UserWorksBody(this.works);
 

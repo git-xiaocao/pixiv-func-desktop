@@ -10,7 +10,7 @@ class UserWorks{
   @JsonKey(name: 'message')
   late String message;
   @JsonKey(name: 'body')
-  late UserWorksBody body;
+  late UserWorksBody? body;
 
   UserWorks(this.error, this.message, this.body);
 

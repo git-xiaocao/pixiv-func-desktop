@@ -26,7 +26,9 @@ class _GetRankingExampleState extends State<GetRankingExample> {
               decoration: InputDecoration(labelText: '页码'),
               controller: pageCountInputController,
             ),
-            SizedBox(height: 10,),
+            SizedBox(
+              height: 10,
+            ),
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
@@ -41,12 +43,15 @@ class _GetRankingExampleState extends State<GetRankingExample> {
                 )
               ],
             ),
-            SizedBox(height: 10,),
+            SizedBox(
+              height: 10,
+            ),
             ElevatedButton(
                 onPressed: () {
                   PixivRequest.instance.getRanking(
-                      int.parse(pageCountInputController.text), isR18Mode,
-                      decodeException: (e, response) {
+                      int.parse(pageCountInputController.text),
+                      mode: isR18Mode ? 'daily' : 'daily_r18',
+                      type: 'all', decodeException: (e, response) {
                     print('反序列化异常$e\n响应:$response');
                   }, requestException: (e) {
                     print('请求异常$e\n响应:${e.response}');
@@ -55,7 +60,9 @@ class _GetRankingExampleState extends State<GetRankingExample> {
                   });
                 },
                 child: Text('获取排行榜')),
-            SizedBox(height: 10,),
+            SizedBox(
+              height: 10,
+            ),
           ],
         ),
       ),

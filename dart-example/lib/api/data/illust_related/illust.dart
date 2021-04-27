@@ -1,17 +1,11 @@
 import 'package:json_annotation/json_annotation.dart';
-import 'author_details.dart';
 
 part 'illust.g.dart';
 
 @JsonSerializable(explicitToJson: true)
-class Illust {
-  @JsonKey(name: 'url')
+class Illust{
   String? url;
-  @JsonKey(name: 'tags')
   List<String> tags;
-  @JsonKey(name:'bookmark_id')
-  int? bookmarkId;
-  @JsonKey(name: 'alt')
   String alt;
   @JsonKey(name: 'url_s')
   String urlS;
@@ -27,27 +21,21 @@ class Illust {
   String? urlPlaceholder;
   @JsonKey(name: 'upload_timestamp')
   int uploadTimestamp;
-  @JsonKey(name: 'id')
-  int id;
+  int id;//string
   @JsonKey(name: 'user_id')
-  int userId;
-  @JsonKey(name: 'title')
+  int userId;//string
   String title;
-  @JsonKey(name: 'width')
-  int width;
-  @JsonKey(name: 'height')
-  int height;
+  int width;//string
+  int height;//string
   @JsonKey(name: 'page_count')
-  String pageCount;
-  @JsonKey(name: 'comment')
+  int pageCount;//string
   String comment;
-  @JsonKey(name: 'author_details')
-  AuthorDetails authorDetails;
+
+  //author_details
 
   Illust(
       this.url,
       this.tags,
-      this.bookmarkId,
       this.alt,
       this.urlS,
       this.urlSM,
@@ -62,11 +50,10 @@ class Illust {
       this.width,
       this.height,
       this.pageCount,
-      this.comment,
-      this.authorDetails
-      );
+      this.comment);
 
   factory Illust.fromJson(Map<String, dynamic> json) => _$IllustFromJson(json);
 
   Map<String, dynamic> toJson() => _$IllustToJson(this);
+
 }

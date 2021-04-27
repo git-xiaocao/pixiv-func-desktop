@@ -8,30 +8,16 @@ part of 'ranking.dart';
 
 Ranking _$RankingFromJson(Map<String, dynamic> json) {
   return Ranking(
-    (json['contents'] as List<dynamic>)
-        .map((e) => Content.fromJson(e as Map<String, dynamic>))
-        .toList(),
-    json['mode'] as String,
-    json['content'] as String,
-    json['page'] as int,
-    json['prev'],
-    json['next'],
-    json['date'] as String,
-    json['prev_date'] as String,
-    json['next_date'] as bool,
-    json['rank_total'] as int,
+    json['error'] as bool,
+    json['message'] as String,
+    json['body'] is! Map
+        ? null
+        : RankingBody.fromJson(json['body'] as Map<String, dynamic>),
   );
 }
 
 Map<String, dynamic> _$RankingToJson(Ranking instance) => <String, dynamic>{
-      'contents': instance.contents.map((e) => e.toJson()).toList(),
-      'mode': instance.mode,
-      'content': instance.content,
-      'page': instance.page,
-      'prev': instance.prev,
-      'next': instance.next,
-      'date': instance.date,
-      'prev_date': instance.prevDate,
-      'next_date': instance.nextDate,
-      'rank_total': instance.rankTotal,
+      'error': instance.error,
+      'message': instance.message,
+      'body': instance.body?.toJson(),
     };
