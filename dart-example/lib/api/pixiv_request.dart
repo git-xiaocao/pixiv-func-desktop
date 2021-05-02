@@ -61,7 +61,7 @@ class PixivRequest {
     Following? followingData;
 
     try {
-      var response = await _httpClient.get<String>(
+      final response = await _httpClient.get<String>(
           'https://www.pixiv.net/ajax/user/$userId/following',
           queryParameters: {
             'offset': offset,
