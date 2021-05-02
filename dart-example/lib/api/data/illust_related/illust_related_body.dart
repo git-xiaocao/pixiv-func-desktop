@@ -7,10 +7,10 @@ class IllustRelatedBody{
   List<int> related;//string
   @JsonKey(name: 'recommend_methods')
   Map<int,RecommendMethod> recommendMethods;//string
-  List<Illust> illust;
+  List<Illust>? illusts;
 
 
-  IllustRelatedBody(this.related, this.recommendMethods, this.illust);
+  IllustRelatedBody(this.related, this.recommendMethods, this.illusts);
 
   factory IllustRelatedBody.fromJson(Map<String, dynamic> json) => _$IllustRelatedBodyFromJson(json);
 

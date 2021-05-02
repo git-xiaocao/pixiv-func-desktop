@@ -10,7 +10,9 @@ RecommendMethod _$RecommendMethodFromJson(Map<String, dynamic> json) {
   return RecommendMethod(
     (json['methods'] as List<dynamic>).map((e) => e as String).toList(),
     (json['score'] as num).toDouble(),
-    (json['seed_illust_ids'] as List<dynamic>).map((e) => e as int).toList(),
+    (json['seed_illust_ids'] as List<dynamic>).map((e){
+      return e is int ? e : int.parse(e as String);
+    }).toList(),
     json['recommend_list_id'] as String,
     json['bandit_info'] as String,
   );

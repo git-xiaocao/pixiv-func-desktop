@@ -25,7 +25,7 @@ Illust _$IllustFromJson(Map<String, dynamic> json) {
     int.parse(json['width'] as String),
     int.parse(json['height'] as String),
     json['page_count'] as String,
-    json['comment'] as String,
+    json['comment'] as String?,
     AuthorDetails.fromJson(json['author_details'] as Map<String, dynamic>)
   );
 }

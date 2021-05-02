@@ -4,29 +4,44 @@ part 'comment.g.dart';
 
 @JsonSerializable(explicitToJson: true)
 class Comment{
-  @JsonKey(name: 'userId')
-  late int userId;
-  @JsonKey(name: 'userName')
-  late String userName;
-  ///头像
-  @JsonKey(name: 'img')
-  late String img;
-  @JsonKey(name: 'id')
-  late int id;
-  @JsonKey(name: 'comment')
-  late String comment;
-  @JsonKey(name: 'commentDate')
-  late String commentDate;
-  @JsonKey(name: 'commentUserId')
-  late String commentUserId;
-  @JsonKey(name: 'editable')
-  late bool editable;
-  @JsonKey(name: 'hasReplies')
-  late bool hasReplies;
+  String img;
+  @JsonKey(name: 'one_comment_comment')
+  String oneComment;
+  @JsonKey(name: 'one_comment_date')
+  String oneCommentDate;
+  @JsonKey(name: 'one_comment_date2')
+  String oneCommentDate2;
+  @JsonKey(name: 'one_comment_id')
+  int oneCommentId;//string
+  @JsonKey(name:'one_comment_parent_id')
+  int? oneCommentParentId;
+  @JsonKey(name:'one_comment_root_id')
+  int? oneCommentRootId;
+  @JsonKey(name: 'one_comment_user_id')
+  int oneCommentUserId;//string
+  @JsonKey(name: 'user_account')
+  String userAccount;
+  @JsonKey(name: 'user_id')
+  int userId;//string
+  @JsonKey(name: 'user_name')
+  String userName;
+  @JsonKey(name: 'has_replies')
+  bool hasReplies;
 
 
-  Comment(this.userId, this.userName, this.img, this.id, this.comment,
-      this.commentDate, this.commentUserId, this.editable, this.hasReplies);
+  Comment(
+      this.img,
+      this.oneComment,
+      this.oneCommentDate,
+      this.oneCommentDate2,
+      this.oneCommentId,
+      this.oneCommentParentId,
+      this.oneCommentRootId,
+      this.oneCommentUserId,
+      this.userAccount,
+      this.userId,
+      this.userName,
+      this.hasReplies);
 
   factory Comment.fromJson(Map<String, dynamic> json) => _$CommentFromJson(json);
 

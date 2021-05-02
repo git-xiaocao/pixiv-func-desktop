@@ -85,12 +85,13 @@ class PixivRequest {
   }
 
   /// 获取排行榜
-  Future<Ranking?> getRanking(int page, {
-    required String mode,
-    required String type,
-    void Function(Exception e, String response)? decodeException,
-    void Function(DioError e)? requestException,
-  }) async {
+  Future<Ranking?> getRanking(
+      int page, {
+        required String mode,
+        required String type,
+        void Function(Exception e, String response)? decodeException,
+        void Function(DioError e)? requestException,
+      }) async {
     Ranking? rankingData;
     try {
       var response = await _httpClient.get<String>(
@@ -163,22 +164,53 @@ class PixivRequest {
   }
 
   /// 获取插画评论区
-  Future<IllustComment?> getIllustComments(int illustId, int offset, int limit,
-      {void Function(Exception e, String response)? decodeException,
-        void Function(DioError e)? requestException}) async {
+  Future<IllustComment?> getIllustComments(
+      int workId,
+      int page, {
+        void Function(DioError e)? requestException,
+        void Function(Exception e, String response)? decodeException,
+      }) async {
     IllustComment? illustCommentData;
 
     try {
       var response = await _httpClient.get<String>(
-          'https://www.pixiv.net/ajax/illusts/comments/roots',
+          'https://www.pixiv.net/touch/ajax/comment/illust?',
+          queryParameters: {'work_id': workId, 'page': page, 'lang': 'zh'});
+
+      if (response.data != null) {
+        try {
+          illustCommentData =
+              IllustComment.fromJson(jsonDecode(response.data!));
+        } on Exception catch (e) {
+          decodeException?.call(e, response.data!);
+        }
+      }
+    } on DioError catch (e) {
+      requestException?.call(e);
+    }
+
+    return illustCommentData;
+  }
+
+  /// 获取评论回复
+  Future<IllustComment?> getCommentReplies(
+      int commentId,
+      int page, {
+        void Function(DioError e)? requestException,
+        void Function(Exception e, String response)? decodeException,
+      }) async {
+    IllustComment? illustCommentData;
+
+    try {
+      var response = await _httpClient.get<String>(
+          'https://www.pixiv.net/touch/ajax/comment/illust/replies?',
           queryParameters: {
-            'illust_id': illustId,
-            'offset': offset,
-            'limit': limit,
+            'comment_id': commentId,
+            'page': page,
             'lang': 'zh'
           });
 
-      if (response.statusCode != 200 && response.data != null) {
+      if (response.data != null) {
         try {
           illustCommentData =
               IllustComment.fromJson(jsonDecode(response.data!));
@@ -194,9 +226,9 @@ class PixivRequest {
   }
 
   ///获取插画的相关推荐(同类型)
-  Future<IllustRelated?> getIllustRelated(int illustId,
-      int page, {
-        String mode = 'all',
+  Future<IllustRelated?> getIllustRelated(
+      int illustId,
+      int limit, {
         void Function(Exception e, String response)? decodeException,
         void Function(DioError e)? requestException,
       }) async {
@@ -204,12 +236,11 @@ class PixivRequest {
 
     try {
       var response = await _httpClient.get<String>(
-          'https://www.pixiv.net/touch/ajax/follow/latest',
+          'https://www.pixiv.net/touch/ajax/recommender/related/illust',
           queryParameters: {
-            'type': 'illusts',
-            'p': page,
-            'include_meta': 0,
-            'mode': mode,
+            'illust_id': illustId,
+            'limit': limit,
+            'exclude_illusts': 0,
             'lang': 'zh',
           });
 
@@ -229,11 +260,12 @@ class PixivRequest {
   }
 
   /// 获取自己关注的用户的插画
-  Future<FollowIllusts?> getFollowIllusts(int page, {
-    bool? r18,
-    void Function(Exception e, String response)? decodeException,
-    void Function(DioError e)? requestException,
-  }) async {
+  Future<FollowIllusts?> getFollowIllusts(
+      int page, {
+        bool? r18,
+        void Function(Exception e, String response)? decodeException,
+        void Function(DioError e)? requestException,
+      }) async {
     FollowIllusts? followIllustsData;
 
     try {
@@ -564,16 +596,17 @@ class PixivRequest {
     return searchSuggestionData;
   }
 
-  Future<Search?> search(String keyword, {
-    required int page,
-    required String mode,
-    required String type,
-    required String searchMode,
-    String startDate = '',
-    String endDate = '',
-    void Function(DioError e)? requestException,
-    void Function(Exception e)? decodeException,
-  }) async {
+  Future<Search?> search(
+      String keyword, {
+        required int page,
+        required String mode,
+        required String type,
+        required String searchMode,
+        String startDate = '',
+        String endDate = '',
+        void Function(DioError e)? requestException,
+        void Function(Exception e)? decodeException,
+      }) async {
     Search? searchData;
 
     try {

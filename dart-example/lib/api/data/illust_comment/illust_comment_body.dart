@@ -8,11 +8,11 @@ class IllustCommentBody{
   @JsonKey(name: 'comments')
   late List<Comment> comments;
   ///还有
-  @JsonKey(name: 'hasNext')
-  late bool hasNext;
+  @JsonKey(name: 'comment_count')
+  late int? commentCount;
 
 
-  IllustCommentBody(this.comments, this.hasNext);
+  IllustCommentBody(this.comments, this.commentCount);
 
   factory IllustCommentBody.fromJson(Map<String, dynamic> json) => _$IllustCommentBodyFromJson(json);
 

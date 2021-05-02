@@ -11,12 +11,12 @@ IllustCommentBody _$IllustCommentBodyFromJson(Map<String, dynamic> json) {
     (json['comments'] as List<dynamic>)
         .map((e) => Comment.fromJson(e as Map<String, dynamic>))
         .toList(),
-    json['hasNext'] as bool,
+    json['comment_count'] as int?,
   );
 }
 
 Map<String, dynamic> _$IllustCommentBodyToJson(IllustCommentBody instance) =>
     <String, dynamic>{
       'comments': instance.comments.map((e) => e.toJson()).toList(),
-      'hasNext': instance.hasNext,
+      'comment_count': instance.commentCount,
     };

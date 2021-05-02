@@ -29,8 +29,11 @@ IllustDetails _$IllustDetailsFromJson(Map<String, dynamic> json) {
         ? int.parse(json['bookmark_id'] as String)
         : null,
     json['alt'] as String,
+    json['upload_timestamp'] as int,
     int.parse(json['page_count'] as String),
     json['comment'] as String?,
+    int.parse(json['id'] as String),
+    json['title'] as String,
   );
 }
 
@@ -48,6 +51,9 @@ Map<String, dynamic> _$IllustDetailsToJson(IllustDetails instance) =>
       'url_big': instance.urlBig,
       'url_placeholder': instance.urlPlaceholder,
       'alt': instance.alt,
+      'upload_timestamp': instance.uploadTimestamp,
       'page_count': instance.pageCount,
       'comment': instance.comment,
+      'id': instance.id,
+      'title': instance.title,
     };

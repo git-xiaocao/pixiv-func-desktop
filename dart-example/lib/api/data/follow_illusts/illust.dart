@@ -1,4 +1,5 @@
 import 'package:json_annotation/json_annotation.dart';
+
 import 'author_details.dart';
 
 part 'illust.g.dart';
@@ -40,7 +41,7 @@ class Illust {
   @JsonKey(name: 'page_count')
   String pageCount;
   @JsonKey(name: 'comment')
-  String comment;
+  String? comment;
   @JsonKey(name: 'author_details')
   AuthorDetails authorDetails;
 

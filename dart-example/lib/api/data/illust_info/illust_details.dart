@@ -9,55 +9,62 @@ part 'illust_details.g.dart';
 @JsonSerializable(explicitToJson: true)
 class IllustDetails {
   @JsonKey(name: 'url')
-  late String url;
+  String url;
 
   @JsonKey(name: 'tags')
-  late List<String> tags;
+  List<String> tags;
 
   @JsonKey(name: 'illust_images')
-  late List<IllustImage> illustImages;
+  List<IllustImage> illustImages;
 
   ///有多个图的时候这个字段才不为null
   @JsonKey(name: 'manga_a')
-  late List<Manga>? mangaA;
+  List<Manga>? mangaA;
 
   @JsonKey(name: 'display_tags')
-  late List<DisplayTag> displayTags;
+  List<DisplayTag> displayTags;
 
   @JsonKey(name: 'tags_editable')
-  late bool tagsEditable;
+  bool tagsEditable;
 
   ///书签用户数量
   @JsonKey(name: 'bookmark_user_total')
-  late int bookmarkUserTotal;
+  int bookmarkUserTotal;
 
   @JsonKey(name: 'url_s')
-  late String? urlS;
+  String? urlS;
 
   @JsonKey(name: 'url_ss')
-  late String? urlSS;
+  String? urlSS;
 
   ///原图
   @JsonKey(name: 'url_big')
-  late String? urlBig;
+  String? urlBig;
 
   @JsonKey(name: 'url_placeholder')
-  late String? urlPlaceholder;
+  String? urlPlaceholder;
 
   ///书签id 没点收藏 就没有这个字段
   @JsonKey(name: 'bookmark_id')
-  late int? bookmarkId;
+  int? bookmarkId;
 
   @JsonKey(name: 'alt')
-  late String alt;
+  String alt;
+
+  @JsonKey(name:'upload_timestamp')
+  int uploadTimestamp;
 
   ///这个作品有几张图
   @JsonKey(name: 'page_count')
-  late int pageCount;
+  int pageCount;
 
   ///画师给这个作品的留言 大部分都是有的(偶尔发现某个作品没有,然后异常 调试的时候才发现....)
   @JsonKey(name: 'comment')
-  late String? comment;
+  String? comment;
+
+  int id;
+
+  String title;
 
   IllustDetails(
       this.url,
@@ -73,8 +80,11 @@ class IllustDetails {
       this.urlPlaceholder,
       this.bookmarkId,
       this.alt,
+      this.uploadTimestamp,
       this.pageCount,
-      this.comment);
+      this.comment,
+      this.id,
+      this.title);
 
   factory IllustDetails.fromJson(Map<String, dynamic> json) =>
       _$IllustDetailsFromJson(json);

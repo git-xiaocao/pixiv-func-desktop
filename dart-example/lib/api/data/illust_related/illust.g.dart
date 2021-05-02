@@ -18,13 +18,14 @@ Illust _$IllustFromJson(Map<String, dynamic> json) {
     json['url_big'] as String?,
     json['url_placeholder'] as String?,
     json['upload_timestamp'] as int,
-    json['id'] as int,
-    json['user_id'] as int,
+    int.parse(json['id'] as String),
+    int.parse(json['user_id'] as String),
     json['title'] as String,
-    json['width'] as int,
-    json['height'] as int,
-    json['page_count'] as int,
-    json['comment'] as String,
+    int.parse(json['width'] as String),
+    int.parse(json['height'] as String),
+    int.parse(json['page_count'] as String),
+    json['comment'] as String?,
+    AuthorDetails.fromJson(json['author_details'] as Map<String, dynamic>),
   );
 }
 
@@ -46,4 +47,5 @@ Map<String, dynamic> _$IllustToJson(Illust instance) => <String, dynamic>{
       'height': instance.height,
       'page_count': instance.pageCount,
       'comment': instance.comment,
+      'author_details': instance.authorDetails.toJson(),
     };
