@@ -1,0 +1,15 @@
+﻿<Page
+    x:Class="PixivFunc.Views.Pages.Play.PlayPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:PixivFunc.Views.Pages.Play"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d"
+    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+
+    <StackPanel>
+        <Button x:Name="ToLoginButton" Content="登录" Click="ToLoginButton_Click"/>
+        <Button x:Name="ToRegisterButton" Content="注册" Click="ToRegisterButton_Click"/>
+    </StackPanel>
+</Page>

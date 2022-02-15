@@ -1,0 +1,10 @@
+{
+  "profiles": {
+    "PixivFunc (Package)": {
+      "commandName": "MsixPackage"
+    },
+    "PixivFunc (Unpackaged)": {
+      "commandName": "Project"
+    }
+  }
+}

@@ -1,0 +1,27 @@
+﻿<Page
+    x:Class="PixivFunc.Views.ShellView"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:PixivFunc.Views"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d"
+    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+    <NavigationView
+        Name="NavView"
+        Loaded="NavView_Loaded"
+        ItemInvoked="NavView_ItemInvoked"
+        IsBackEnabled="{x:Bind contentFrame.CanGoBack,Mode=OneWay}"
+        BackRequested="NavView_BackRequested">
+        <NavigationView.MenuItems>
+            <NavigationViewItem Icon="Shuffle" Content="推荐" Tag="Recommend"/>
+            <NavigationViewItem Icon="FourBars" Content="排行榜" Tag="Ranking"/>
+            <NavigationViewItem Icon="Tag" Content="收藏" Tag="Bookmarked"/>
+            <NavigationViewItem Icon="People" Content="关注" Tag="Following"/>
+            <NavigationViewItem Icon="Crop" Content="关注者的新作品" Tag="FollowerNew"/>
+            <NavigationViewItem Icon="Globe" Content="所有人的新作品" Tag="AnyNew"/>
+            <NavigationViewItem Icon="Zoom" Content="搜索" Tag="Search"/>
+        </NavigationView.MenuItems>
+        <Frame Name="contentFrame"/>
+    </NavigationView>
+</Page>
